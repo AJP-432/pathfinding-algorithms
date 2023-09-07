@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="./maze.png" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js" defer></script>
+    <title>Path Finding</title>
+  </head>
+  <body>
+    <div class="top-bar-options">
+      <div class="centerize"><h1>Pathfinding Visualizer</h1></div>
+
+      <div class="centerize gap">
+        <div class="slidecontainer">
+          <p id="slider-text">25</p>
+          <input type="range" min="10" max="75" value="25" class="slider" id="slider-board-size" />
+        </div>
+        <select id="algorithms-select">
+          <option value="dijkstra">Dijkstra's Algorithm</option>
+          <option value="astar">A* Algorithm</option>
+          <option value="bfs">Breadth-First Search</option>
+          <option value="dfs">Depth-First Search</option>
+        </select>
+
+        <select id="terrains-select">
+          <option value="normal">Plain</option>
+          <option value="random">Random</option>
+          <option value="recursive-maze">Recursive Maze</option>
+        </select>
+
+        <select id="node-types-select">
+          <option value="start">Start Node</option>
+          <option value="end">End Node</option>
+          <option value="obstacle">Obstacle Node</option>
+        </select>
+
+        <button id="reset">Reset</button>
+      </div>
+    </div>
+    <div class="centerize">
+      <div class="board"></div>
+    </div>
+  </body>
+</html>
