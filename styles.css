@@ -31,3 +31,19 @@ option {
 .cell {
   border: solid black 1px;
 }
+
+.cell:hover {
+  background-color: black;
+}
+
+.start-node {
+  background-color: green;
+}
+
+.end-node {
+  background-color: red;
+}
+
+.wall-node {
+  background-color: blue;
+}
