@@ -4,7 +4,6 @@
 button,
 select,
 option {
-  box-sizing: border-box;
   font-family: "IBM Plex Mono", monospace;
 }
 
@@ -23,17 +22,14 @@ option {
 }
 
 .board {
-  width: 700px;
+  width: 1400px;
   height: 700px;
-  border: solid black 2px;
+  margin-top: 20px;
+  border: solid black 10px;
 }
 
 .cell {
   border: solid black 1px;
-}
-
-.cell:hover {
-  background-color: black;
 }
 
 .start-node {

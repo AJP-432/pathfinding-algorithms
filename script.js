@@ -1,12 +1,4 @@
-let grid_count = 25;
-
-const slider = document.querySelector("#slider");
-slider.oninput = function () {
-  const sliderText = document.querySelector("#slider-text");
-  sliderText.innerHTML = this.value;
-  generateBoard(this.value);
-  grid_count = this.value;
-};
+const GRID_COUNT = 20;
 
 function generateBoard(size) {
   unit_size = String(700 / size);
@@ -16,10 +8,10 @@ function generateBoard(size) {
 
   // Clear previous board
   board.innerHTML = "";
-  for (let a = 0; a < size; a++) {
+  for (let a = 0; a < 2 * size; a++) {
     const row_div = document.createElement("div");
     row_div.dataset.row = `${a}`;
-    row_div.style.width = "700px";
+    row_div.style.width = "1400px";
     row_div.style.height = `${unit_size}px`;
     row_div.style.boxSizing = "border-box";
 
@@ -40,7 +32,7 @@ function generateBoard(size) {
 }
 
 function main() {
-  generateBoard(25);
+  generateBoard(GRID_COUNT);
 }
 
 function selectCell(row, col) {
