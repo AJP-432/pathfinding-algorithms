@@ -33,7 +33,7 @@ option {
 }
 
 .start-node {
-  background-color: green;
+  background-color: green !important;
 }
 
 .end-node {

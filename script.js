@@ -1,6 +1,6 @@
 const GRID_COUNT = 20;
 
-function generateBoard(size) {
+function generateDisplayBoard(size) {
   unit_size = String(700 / size);
 
   const board = document.querySelector(".board");
@@ -31,18 +31,22 @@ function generateBoard(size) {
   }
 }
 
-function main() {
-  generateBoard(GRID_COUNT);
+function generateInternalBoard(size) {
+  return Array.from({ length: x }, () => Array.from({ length: x }, () => "."));
 }
 
-function selectCell(row, col) {
-  const cell = document.querySelector(`div[row='${row}'][col='${col}']`);
+function main() {
+  generateDisplayBoard(GRID_COUNT);
+  internalBoard = generateInternalBoard(GRID_COUNT);
+}
+
+function selectDisplayCell(row, col) {
+  const selectedCell = document.querySelector(`div[data-row='${row}'][data-col='${col}']`);
   return selectedCell;
 }
 
 function setCell(row, col) {
   const cell = selectCell(row, col);
-  cell.classList.add("start-node");
 }
 
 main();

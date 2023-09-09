@@ -14,7 +14,6 @@
       <div class="centerize"><h1>Pathfinding Visualizer</h1></div>
 
       <div class="centerize gap">
-        
         <select id="algorithms-select">
           <option value="dijkstra">Dijkstra's Algorithm</option>
           <option value="astar">A* Algorithm</option>
@@ -29,9 +28,10 @@
         </select>
 
         <select id="node-types-select">
+          <option value="start">Wall Node</option>
+          <option value="end">Weight Node</option>
           <option value="start">Start Node</option>
           <option value="end">End Node</option>
-          <option value="obstacle">Obstacle Node</option>
         </select>
 
         <button id="reset">Reset</button>
