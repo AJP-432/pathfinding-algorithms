@@ -1,11 +1,10 @@
-import { generateDisplayBoard, generateInternalBoard, resetBoard } from "./utils";
+import { boardState } from "/board.js";
 
 const resetButton = document.getElementById("reset");
-resetButton.addEventListener("click", resetBoard());
+resetButton.addEventListener("click", boardState.resetBoard());
 
 function main() {
-  generateDisplayBoard();
-  internalBoard = generateInternalBoard();
+  boardState.generateBoard();
 }
 
 main();

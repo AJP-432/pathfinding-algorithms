@@ -1,4 +1,4 @@
-import { START_NODE, END_NODE, internalBoard, cellStates, selectDisplayCell } from "./utils";
+import { START_NODE, END_NODE, internalBoard, cellStates, selectDisplayCell } from "/pathfinding-algorithms/utils";
 
 let foundPath = null;
 let NODES_TO_EXPLORE = [[START_NODE, []]];
