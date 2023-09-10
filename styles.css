@@ -15,6 +15,9 @@ option {
 
 .board {
   display: flex;
+  width: 1400px;
+  height: 700;
+  margin-top: 25px;
 }
 
 .gap {
@@ -22,16 +25,20 @@ option {
 }
 
 .cell {
-  background-color: white;
-  border: solid black 1px;
+  background-color: black;
+  border: solid white 1px;
+}
+
+.cell:hover {
+  opacity: 0.7;
 }
 
 .start-node {
-  background-color: red;
+  background-color: green;
 }
 
 .end-node {
-  background-color: green;
+  background-color: red;
 }
 
 .wall-node {

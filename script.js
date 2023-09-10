@@ -1,11 +1,8 @@
 const GRID_COUNT = 20;
 let START_NODE = null;
 let END_NODE = null;
-let unit_size = null;
 let internalBoard = null;
-
-const board = document.querySelector(".board");
-unit_size = board.clientWidth / GRID_COUNT;
+let unit_size = 700 / GRID_COUNT;
 
 const CellStates = {
   NULL: 1,
@@ -23,6 +20,8 @@ function selectDisplayCell(row, col) {
 }
 
 function generateDisplayBoard(size = GRID_COUNT) {
+  const board = document.querySelector(".board");
+
   // Clear previous board
   board.innerHTML = "";
 
@@ -38,22 +37,13 @@ function generateDisplayBoard(size = GRID_COUNT) {
       row_div.dataset.col = `${a}`;
       row_div.style.width = `${unit_size}px`;
       row_div.style.height = `${unit_size}px`;
-      row_div.style.backgroundColor = "white";
 
       row_div.classList.add("cell");
       row_div.dataset.state = CellStates.NULL;
 
-      row_div.addEventListener("mouseenter", () => {
-        if (this.dataset.state == CellStates.NULL) this.style.backgroundColor = "#000000";
-      });
-
-      row_div.addEventListener("mouseleave", () => {
-        if (this.dataset.state == CellStates.NULL) this.style.backgroundColor = "#FFFFFF";
-      });
-
-      row_div.addEventListener("mousedown", setCellNode());
-      row_div.addEventListener("dragover", setCellNode());
-      row_div.addEventListener("dblclick", removeCellNode());
+      row_div.addEventListener("mousedown", setCellNode);
+      row_div.addEventListener("dragover", setCellNode);
+      row_div.addEventListener("dblclick", unsetCellNode);
 
       col_div.appendChild(row_div);
     }
@@ -61,64 +51,74 @@ function generateDisplayBoard(size = GRID_COUNT) {
   }
 }
 
-function setCellNode() {
+function setCellNode(event) {
   const nodeType = document.getElementById("node-types");
-  const row = parseInt(this.dataset.row, 10);
-  const col = parseInt(this.dataset.col, 10);
+  const row = parseInt(event.target.dataset.row, 10);
+  const col = parseInt(event.target.dataset.col, 10);
+  const clickedCell = event.target;
 
-  if (this.dataset.state == CellStates.NULL) {
-    const nodeTypeClass = nodeType.value + "-node";
-    this.classList.add(nodeTypeClass);
-
+  if (clickedCell.dataset.state == CellStates.NULL) {
     switch (nodeType.value) {
       case "start":
         const oldStart = document.querySelector(".start-node");
-        oldStart.classList.remove("start-node");
-        START_NODE = (row, col);
-        this.dataset.state = CellStates.START;
+        if (oldStart) oldStart.classList.remove("start-node");
+        START_NODE = [row, col];
+        clickedCell.dataset.state = CellStates.START;
+        clickedCell.classList.add("start-node");
         internalBoard[row][col] = CellStates.START;
         break;
       case "end":
         const oldEnd = document.querySelector(".end-node");
-        oldEnd.classList.remove("end-node");
-        end_selected = (row, col);
-        this.dataset.state = CellStates.END;
+        if (oldEnd) oldEnd.classList.remove("end-node");
+        END_NODE = [row, col];
+        clickedCell.dataset.state = CellStates.END;
+        clickedCell.classList.add("end-node");
         internalBoard[row][col] = CellStates.END;
         break;
       case "wall":
-        this.dataset.state = CellStates.WALL;
+        clickedCell.dataset.state = CellStates.WALL;
+        clickedCell.classList.add("wall-node");
         internalBoard[row][col] = CellStates.WALL;
+        break;
       case "weight":
-        this.dataset.state = CellStates.WEIGHT;
+        clickedCell.dataset.state = CellStates.WEIGHT;
+        clickedCell.classList.add("weight-node");
         internalBoard[row][col] = CellStates.WEIGHT;
+        break;
     }
   }
 }
 
-function unsetCellNode() {
-  const row = parseInt(this.dataset.row, 10);
-  const col = parseInt(this.dataset.col, 10);
-  if (this.dataset.state != CellStates.NULL) {
+function unsetCellNode(event) {
+  const row = parseInt(event.target.dataset.row, 10);
+  const col = parseInt(event.target.dataset.col, 10);
+  const clickedCell = event.target;
+
+  if (clickedCell.dataset.state != CellStates.NULL) {
     internalBoard[row][col] = CellStates.NULL;
-    switch (this.dataset.state) {
+    switch (clickedCell.dataset.state) {
       case CellStates.START:
         START_NODE = null;
-        this.classList.remove("start-node");
+        clickedCell.classList.remove("start-node");
+        break;
       case CellStates.END:
         END_NODE = null;
-        this.classList.remove("end-node");
+        clickedCell.classList.remove("end-node");
+        break;
       case CellStates.WALL:
-        this.classList.remove("wall-node");
+        clickedCell.classList.remove("wall-node");
+        break;
       case CellStates.WEIGHT:
-        this.classList.remove("weight-node");
+        clickedCell.classList.remove("weight-node");
+        break;
     }
   }
 
-  this.dataset.state = CellStates.NULL;
+  clickedCell.dataset.state = CellStates.NULL;
 }
 
 function generateInternalBoard(size = GRID_COUNT) {
-  return Array.from({ length: size }, () => Array.from({ length: size }, () => "."));
+  return Array.from({ length: size }, () => Array.from({ length: size }, () => CellStates.NULL));
 }
 
 function main() {
