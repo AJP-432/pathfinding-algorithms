@@ -56,3 +56,7 @@ option {
 .looking-node {
   background-color: lightblue;
 }
+
+.path-node {
+  background-color: white;
+}
