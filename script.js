@@ -121,10 +121,22 @@ function generateInternalBoard(size = GRID_COUNT) {
   return Array.from({ length: size }, () => Array.from({ length: size }, () => CellStates.NULL));
 }
 
+function resetBoard() {
+  return function () {
+    START_NODE = null;
+    END_NODE = null;
+    internalBoard = null;
+
+    generateDisplayBoard(GRID_COUNT);
+    internalBoard = generateInternalBoard(GRID_COUNT);
+  }
+}
+
+const resetButton = document.getElementById("reset");
+resetButton.addEventListener("click", resetBoard());
+
 function main() {
   generateDisplayBoard(GRID_COUNT);
-  const resetButton = document.getElementById("reset");
-  resetButton.addEventListener("click", resetBoard());
   internalBoard = generateInternalBoard(GRID_COUNT);
 }
 
