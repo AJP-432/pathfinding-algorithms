@@ -14,9 +14,22 @@ function isValid(row, col) {
     0 <= col &&
     col < 40 &&
     boardState.internalBoard[row][col] != boardState.cellStates.VISITED &&
-    boardState.internalBoard[row][col] != boardState.cellStates.START &&
+    boardState.internalBoard[row][col] != boardState.cellStates.START && 
     boardState.internalBoard[row][col] != boardState.cellStates.WALL
   );
+}
+
+function drawPath(posAcc) {
+  console.log("This is the DRAWER");
+  console.log(posAcc);
+  for (let i = 1; i < posAcc.length; i++) {
+    const currPos = posAcc[i];
+    const pathCell = boardState.selectDisplayCell(currPos[0], currPos[1]);
+    if (pathCell.classList.contains("visited-node")) {
+      pathCell.classList.remove("visited-node");
+    }
+    pathCell.classList.add("path-node");
+  }
 }
 
 export async function bfs() {
@@ -30,12 +43,7 @@ export async function bfs() {
     let [currNodePos, currAcc] = queue.shift();
 
     for (let i = 0; i < 4; i++) {
-      let newNodePos = [
-        currNodePos[0] + offsets[i][0],
-        currNodePos[1] + offsets[i][1],
-      ];
-
-      console.log(newNodePos);
+      let newNodePos = [currNodePos[0] + offsets[i][0], currNodePos[1] + offsets[i][1]];
 
       if (isValid(newNodePos[0], newNodePos[1])) {
         const displayCell = boardState.selectDisplayCell(
@@ -45,17 +53,17 @@ export async function bfs() {
 
         displayCell.classList.add("looking-node");
 
-        let newAcc = currAcc + offsets[i];
-        const newNodeState = parseInt(
-          boardState.internalBoard[newNodePos[0]][newNodePos[1]],
-          10
-        );
+        let newAcc = currAcc.concat([currNodePos]);
+        const newNodeState = parseInt(boardState.internalBoard[newNodePos[0]][newNodePos[1]], 10);
 
         await sleep(50);
 
         switch (newNodeState) {
           case boardState.cellStates.END:
             foundPath = newAcc;
+            console.log("This is the path");
+            console.log(foundPath);
+            drawPath(foundPath);
             return foundPath;
           case boardState.cellStates.EMPTY:
             queue.push([newNodePos, newAcc]);
