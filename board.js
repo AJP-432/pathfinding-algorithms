@@ -11,7 +11,7 @@ class Board {
       WALL: 4,
       WEIGHT: 5,
       PATH: 6,
-      SEARCHED: 7,
+      VISITED: 7,
     };
     this.startNode = null;
     this.endNode = null;

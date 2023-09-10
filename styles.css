@@ -52,3 +52,7 @@ option {
 .visited-node {
   background-color: blueviolet;
 }
+
+.looking-node {
+  background-color: lightblue;
+}
