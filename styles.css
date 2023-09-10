@@ -13,33 +13,31 @@ option {
   align-items: center;
 }
 
-#slider-text {
-  text-align: center;
+.board {
+  display: flex;
 }
 
 .gap {
   gap: 10px;
 }
 
-.board {
-  width: 1400px;
-  height: 700px;
-  margin-top: 20px;
-  border: solid black 10px;
-}
-
 .cell {
+  background-color: white;
   border: solid black 1px;
 }
 
 .start-node {
-  background-color: green !important;
-}
-
-.end-node {
   background-color: red;
 }
 
+.end-node {
+  background-color: green;
+}
+
 .wall-node {
+  background-color: orange;
+}
+
+.weight-node {
   background-color: blue;
 }

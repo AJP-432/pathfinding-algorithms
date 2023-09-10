@@ -10,24 +10,26 @@
     <title>Path Finding</title>
   </head>
   <body>
-    <div class="top-bar-options">
-      <div class="centerize"><h1>Pathfinding Visualizer</h1></div>
+    <div class="centerize">
+      <h1>Pathfinding Visualizer</h1>
+    </div>
 
-      <div class="centerize gap">
-        <select id="algorithms-select">
+    <header class="centerize">
+      <div class="centerize gap options">
+        <select id="algorithms">
           <option value="dijkstra">Dijkstra's Algorithm</option>
           <option value="astar">A* Algorithm</option>
           <option value="bfs">Breadth-First Search</option>
           <option value="dfs">Depth-First Search</option>
         </select>
 
-        <select id="terrains-select">
+        <select id="terrains">
           <option value="normal">Plain</option>
           <option value="random">Random</option>
           <option value="recursive-maze">Recursive Maze</option>
         </select>
 
-        <select id="node-types-select">
+        <select id="node-types">
           <option value="start">Start Node</option>
           <option value="end">End Node</option>
           <option value="wall">Wall Node</option>
@@ -36,9 +38,10 @@
 
         <button id="reset">Reset</button>
       </div>
-    </div>
-    <div class="centerize">
+    </header>
+
+    <main class="centerize">
       <div class="board"></div>
-    </div>
+    </main>
   </body>
 </html>
