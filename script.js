@@ -123,6 +123,8 @@ function generateInternalBoard(size = GRID_COUNT) {
 
 function main() {
   generateDisplayBoard(GRID_COUNT);
+  const resetButton = document.getElementById("reset");
+  resetButton.addEventListener("click", resetBoard());
   internalBoard = generateInternalBoard(GRID_COUNT);
 }
 
