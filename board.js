@@ -82,8 +82,8 @@ class Board {
   }
 
   generateInternalBoard(size = this.gridCount) {
-    this.internalBoard = Array.from({ length: size * 2 }, () =>
-      Array.from({ length: size }, () => this.cellStates.EMPTY)
+    this.internalBoard = Array.from({ length: size }, () =>
+      Array.from({ length: size * 2 }, () => this.cellStates.EMPTY)
     );
   }
 
