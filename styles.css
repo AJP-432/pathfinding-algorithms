@@ -1,5 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inconsolata&display=swap");
 
+:root {
+  --black: #000000ff;
+  --rose: #ff206eff;
+  --yellow: #fbff12ff;
+  --purple: #6700ff;
+  --lightpurple: #b700ff;
+  --white: #ffffffff;
+  --green: #77ff77;
+}
+
 *,
 button,
 select,
@@ -34,15 +44,15 @@ option {
 }
 
 .start-node {
-  background-color: green;
+  background-color: var(--green);
 }
 
 .end-node {
-  background-color: red;
+  background-color: var(--rose);
 }
 
 .wall-node {
-  background-color: orange;
+  background-color: var(--yellow);
 }
 
 .weight-node {
@@ -50,11 +60,11 @@ option {
 }
 
 .visited-node {
-  background-color: blueviolet;
+  background-color: var(--purple);
 }
 
 .looking-node {
-  background-color: lightblue;
+  background-color: var(--lightpurple);
 }
 
 .path-node {
