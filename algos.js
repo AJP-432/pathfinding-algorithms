@@ -1,6 +1,5 @@
 import { boardState } from "/board.js";
 
-let foundPath = null;
 const offsets = [
   [1, 0],
   [0, 1],
@@ -15,13 +14,17 @@ function isValid(row, col) {
     0 <= col &&
     col < 40 &&
     boardState.internalBoard[row][col] != boardState.cellStates.VISITED &&
-    boardState.internalBoard[row][col] != boardState.cellStates.START
+    boardState.internalBoard[row][col] != boardState.cellStates.START &&
+    boardState.internalBoard[row][col] != boardState.cellStates.WALL
   );
 }
 
-export function bfs() {
+export async function bfs() {
+  let foundPath = null;
   const start = [boardState.startNode, []];
   let queue = [start];
+
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   while (!foundPath && queue.length != 0) {
     let [currNodePos, currAcc] = queue.shift();
@@ -39,6 +42,7 @@ export function bfs() {
           newNodePos[0],
           newNodePos[1]
         );
+
         displayCell.classList.add("looking-node");
 
         let newAcc = currAcc + offsets[i];
@@ -46,6 +50,8 @@ export function bfs() {
           boardState.internalBoard[newNodePos[0]][newNodePos[1]],
           10
         );
+
+        await sleep(50);
 
         switch (newNodeState) {
           case boardState.cellStates.END:
@@ -55,10 +61,9 @@ export function bfs() {
             queue.push([newNodePos, newAcc]);
             break;
         }
+
         displayCell.classList.remove("looking-node");
         addToVisited(newNodePos[0], newNodePos[1]);
-      } else {
-        continue;
       }
     }
   }
@@ -66,7 +71,8 @@ export function bfs() {
   function addToVisited(row, col) {
     const visitedCell = boardState.selectDisplayCell(row, col);
     visitedCell.classList.add("visited-node");
-    boardState.internalBoard[row][col] = boardState.cellStates.visitedCell;
+    visitedCell.dataset.state = boardState.cellStates.VISITED;
+    boardState.internalBoard[row][col] = boardState.cellStates.VISITED;
   }
 }
 

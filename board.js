@@ -2,7 +2,7 @@ class Board {
   constructor() {
     this.unitSize = 700 / 20;
     this.gridCount = 20;
-    this.internalBoard = null;
+    this.internalBoard;
     this.displayBoard = document.querySelector(".board");
     this.cellStates = {
       EMPTY: 1,
@@ -153,10 +153,10 @@ class Board {
   resetBoard() {
     this.startNode = null;
     this.endNode = null;
-    this.internalBoard = null;
 
-    this.generateDisplayBoard(this.gridCount);
-    this.internalBoard = this.generateInternalBoard(this.gridCount);
+    this.generateBoard(this.gridCount);
+
+    console.log(this.internalBoard);
   }
 }
 
