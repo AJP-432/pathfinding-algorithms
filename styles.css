@@ -48,3 +48,7 @@ option {
 .weight-node {
   background-color: blue;
 }
+
+.visited-node {
+  background-color: blueviolet;
+}

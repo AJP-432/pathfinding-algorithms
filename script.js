@@ -4,7 +4,7 @@ let END_NODE = null;
 let internalBoard = null;
 let unit_size = 700 / GRID_COUNT;
 
-const CellStates = {
+const cellStates = {
   NULL: 1,
   START: 2,
   END: 3,
@@ -39,7 +39,7 @@ function generateDisplayBoard(size = GRID_COUNT) {
       row_div.style.height = `${unit_size}px`;
 
       row_div.classList.add("cell");
-      row_div.dataset.state = CellStates.NULL;
+      row_div.dataset.state = cellStates.NULL;
 
       row_div.addEventListener("mousedown", setCellNode);
       row_div.addEventListener("dragover", setCellNode);
@@ -57,33 +57,33 @@ function setCellNode(event) {
   const col = parseInt(event.target.dataset.col, 10);
   const clickedCell = event.target;
 
-  if (clickedCell.dataset.state == CellStates.NULL) {
+  if (clickedCell.dataset.state == cellStates.NULL) {
     switch (nodeType.value) {
       case "start":
         const oldStart = document.querySelector(".start-node");
         if (oldStart) oldStart.classList.remove("start-node");
         START_NODE = [row, col];
-        clickedCell.dataset.state = CellStates.START;
+        clickedCell.dataset.state = cellStates.START;
         clickedCell.classList.add("start-node");
-        internalBoard[row][col] = CellStates.START;
+        internalBoard[row][col] = cellStates.START;
         break;
       case "end":
         const oldEnd = document.querySelector(".end-node");
         if (oldEnd) oldEnd.classList.remove("end-node");
         END_NODE = [row, col];
-        clickedCell.dataset.state = CellStates.END;
+        clickedCell.dataset.state = cellStates.END;
         clickedCell.classList.add("end-node");
-        internalBoard[row][col] = CellStates.END;
+        internalBoard[row][col] = cellStates.END;
         break;
       case "wall":
-        clickedCell.dataset.state = CellStates.WALL;
+        clickedCell.dataset.state = cellStates.WALL;
         clickedCell.classList.add("wall-node");
-        internalBoard[row][col] = CellStates.WALL;
+        internalBoard[row][col] = cellStates.WALL;
         break;
       case "weight":
-        clickedCell.dataset.state = CellStates.WEIGHT;
+        clickedCell.dataset.state = cellStates.WEIGHT;
         clickedCell.classList.add("weight-node");
-        internalBoard[row][col] = CellStates.WEIGHT;
+        internalBoard[row][col] = cellStates.WEIGHT;
         break;
     }
   }
@@ -94,31 +94,31 @@ function unsetCellNode(event) {
   const col = parseInt(event.target.dataset.col, 10);
   const clickedCell = event.target;
 
-  if (clickedCell.dataset.state != CellStates.NULL) {
-    internalBoard[row][col] = CellStates.NULL;
+  if (clickedCell.dataset.state != cellStates.NULL) {
+    internalBoard[row][col] = cellStates.NULL;
     switch (clickedCell.dataset.state) {
-      case CellStates.START:
+      case cellStates.START:
         START_NODE = null;
         clickedCell.classList.remove("start-node");
         break;
-      case CellStates.END:
+      case cellStates.END:
         END_NODE = null;
         clickedCell.classList.remove("end-node");
         break;
-      case CellStates.WALL:
+      case cellStates.WALL:
         clickedCell.classList.remove("wall-node");
         break;
-      case CellStates.WEIGHT:
+      case cellStates.WEIGHT:
         clickedCell.classList.remove("weight-node");
         break;
     }
   }
 
-  clickedCell.dataset.state = CellStates.NULL;
+  clickedCell.dataset.state = cellStates.NULL;
 }
 
 function generateInternalBoard(size = GRID_COUNT) {
-  return Array.from({ length: size }, () => Array.from({ length: size }, () => CellStates.NULL));
+  return Array.from({ length: size }, () => Array.from({ length: size }, () => cellStates.NULL));
 }
 
 function resetBoard() {
