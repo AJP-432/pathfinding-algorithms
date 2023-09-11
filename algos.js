@@ -43,15 +43,24 @@ export async function bfs() {
     let [currNodePos, currAcc] = queue.shift();
 
     for (let i = 0; i < 4; i++) {
-      let newNodePos = [currNodePos[0] + offsets[i][0], currNodePos[1] + offsets[i][1]];
+      let newNodePos = [
+        currNodePos[0] + offsets[i][0],
+        currNodePos[1] + offsets[i][1],
+      ];
 
       if (isValid(newNodePos[0], newNodePos[1])) {
-        const displayCell = boardState.selectDisplayCell(newNodePos[0], newNodePos[1]);
+        const displayCell = boardState.selectDisplayCell(
+          newNodePos[0],
+          newNodePos[1]
+        );
 
         displayCell.classList.add("looking-node");
 
         let newAcc = currAcc.concat([currNodePos]);
-        const newNodeState = parseInt(boardState.internalBoard[newNodePos[0]][newNodePos[1]], 10);
+        const newNodeState = parseInt(
+          boardState.internalBoard[newNodePos[0]][newNodePos[1]],
+          10
+        );
 
         await sleep(0.5);
 
@@ -92,15 +101,24 @@ export async function dfs() {
     let [currNodePos, currAcc] = stack.pop();
 
     for (let i = 0; i < 4; i++) {
-      let newNodePos = [currNodePos[0] + offsets[i][0], currNodePos[1] + offsets[i][1]];
+      let newNodePos = [
+        currNodePos[0] + offsets[i][0],
+        currNodePos[1] + offsets[i][1],
+      ];
 
       if (isValid(newNodePos[0], newNodePos[1])) {
-        const displayCell = boardState.selectDisplayCell(newNodePos[0], newNodePos[1]);
+        const displayCell = boardState.selectDisplayCell(
+          newNodePos[0],
+          newNodePos[1]
+        );
 
         displayCell.classList.add("looking-node");
 
         let newAcc = currAcc.concat([currNodePos]);
-        const newNodeState = parseInt(boardState.internalBoard[newNodePos[0]][newNodePos[1]], 10);
+        const newNodeState = parseInt(
+          boardState.internalBoard[newNodePos[0]][newNodePos[1]],
+          10
+        );
 
         await sleep(0.5);
 
@@ -118,6 +136,7 @@ export async function dfs() {
 
         displayCell.classList.remove("looking-node");
         addToVisited(newNodePos[0], newNodePos[1]);
+        break;
       }
     }
   }

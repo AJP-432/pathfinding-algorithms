@@ -8,6 +8,7 @@
   --lightpurple: #b700ff;
   --white: #ffffffff;
   --green: #77ff77;
+  --lightblue: #83eeff;
 }
 
 *,
@@ -67,5 +68,5 @@ option {
 }
 
 .path-node {
-  background-color: white;
+  background-color: var(--lightblue);
 }

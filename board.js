@@ -18,11 +18,14 @@ class Board {
   }
 
   selectDisplayCell(row, col) {
-    const selectedCell = document.querySelector(`div[data-row='${row}'][data-col='${col}']`);
+    const selectedCell = document.querySelector(
+      `div[data-row='${row}'][data-col='${col}']`
+    );
     return selectedCell;
   }
 
   generateBoard(size = this.gridCount) {
+    this.internalBoard = null;
     this.generateDisplayBoard(size);
     this.generateInternalBoard(size);
 
@@ -101,14 +104,17 @@ class Board {
     );
   }
 
-  generateRandomBoard() {
+  async generateRandomBoard() {
     this.resetBoard();
     const probability = 0.3;
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     for (let row = 0; row < this.gridCount; row++) {
       for (let col = 0; col < this.gridCount * 2; col++) {
         if (Math.random() < probability) {
           this.setCellNode(row, col, "wall");
+          await sleep(0.001);
         }
       }
     }
