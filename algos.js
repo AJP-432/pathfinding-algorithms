@@ -10,9 +10,9 @@ const offsets = [
 function isValid(row, col) {
   return (
     0 <= row &&
-    row < 20 &&
+    row < boardState.gridCount &&
     0 <= col &&
-    col < 40 &&
+    col < boardState.gridCount * 2 &&
     boardState.internalBoard[row][col] != boardState.cellStates.VISITED &&
     boardState.internalBoard[row][col] != boardState.cellStates.START &&
     boardState.internalBoard[row][col] != boardState.cellStates.WALL
@@ -53,7 +53,7 @@ export async function bfs() {
         let newAcc = currAcc.concat([currNodePos]);
         const newNodeState = parseInt(boardState.internalBoard[newNodePos[0]][newNodePos[1]], 10);
 
-        await sleep(50);
+        await sleep(2);
 
         switch (newNodeState) {
           case boardState.cellStates.END:
