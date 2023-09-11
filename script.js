@@ -1,5 +1,5 @@
 import { boardState } from "/board.js";
-import { bfs, dfs } from "/algos.js";
+import { bfs, dfs, dijkstra, test } from "/algos.js";
 
 function navigate() {
   const selectedAlgorithm = document.getElementById("algorithms").value;
@@ -11,9 +11,9 @@ function navigate() {
     case "dfs":
       dfs();
       break;
-    // case "dijkstra":
-    //   dijkstra();
-    //   break;
+    case "dijkstra":
+      dijkstra();
+      break;
     // case "astar":
     //   astar();
     //   break;
@@ -23,6 +23,7 @@ function navigate() {
 }
 
 function main() {
+  test();
   boardState.generateBoard();
   console.log(boardState.internalBoard);
 

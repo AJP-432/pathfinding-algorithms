@@ -56,7 +56,7 @@ option {
 }
 
 .weight-node {
-  background-color: blue;
+  background-image: url("./weight.svg");
 }
 
 .visited-node {

@@ -30,7 +30,7 @@ class Board {
     this.generateInternalBoard(size);
 
     const resetButton = document.getElementById("reset");
-    resetButton.addEventListener("click", (event) => {
+    resetButton.addEventListener("click", () => {
       this.resetBoard();
     });
 

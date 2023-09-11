@@ -32,6 +32,13 @@ function drawPath(posAcc) {
   }
 }
 
+function addToVisited(row, col) {
+  const visitedCell = boardState.selectDisplayCell(row, col);
+  visitedCell.classList.add("visited-node");
+  visitedCell.dataset.state = boardState.cellStates.VISITED;
+  boardState.internalBoard[row][col] = boardState.cellStates.VISITED;
+}
+
 export async function bfs() {
   let foundPath = null;
   const start = [boardState.startNode, []];
@@ -80,13 +87,6 @@ export async function bfs() {
         addToVisited(newNodePos[0], newNodePos[1]);
       }
     }
-  }
-
-  function addToVisited(row, col) {
-    const visitedCell = boardState.selectDisplayCell(row, col);
-    visitedCell.classList.add("visited-node");
-    visitedCell.dataset.state = boardState.cellStates.VISITED;
-    boardState.internalBoard[row][col] = boardState.cellStates.VISITED;
   }
 }
 
@@ -140,13 +140,86 @@ export async function dfs() {
       }
     }
   }
+}
 
-  function addToVisited(row, col) {
-    const visitedCell = boardState.selectDisplayCell(row, col);
-    visitedCell.classList.add("visited-node");
-    visitedCell.dataset.state = boardState.cellStates.VISITED;
-    boardState.internalBoard[row][col] = boardState.cellStates.VISITED;
+export async function dijkstra() {
+  let foundPath = null;
+  const start = [boardState.startNode, [], 0];
+  let queue = [start];
+
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  while (!foundPath && queue.length != 0) {
+    let [currNodePos, currAcc, currWeight] = queue.shift();
+
+    for (let i = 0; i < 4; i++) {
+      let newNodePos = [
+        currNodePos[0] + offsets[i][0],
+        currNodePos[1] + offsets[i][1],
+      ];
+
+      if (isValid(newNodePos[0], newNodePos[1])) {
+        const displayCell = boardState.selectDisplayCell(
+          newNodePos[0],
+          newNodePos[1]
+        );
+
+        displayCell.classList.add("looking-node");
+
+        const newNodeState = parseInt(
+          boardState.internalBoard[newNodePos[0]][newNodePos[1]],
+          10
+        );
+
+        let newAcc = currAcc.concat([currNodePos]);
+        let newWeight =
+          newNodeState == boardState.cellStates.WEIGHT
+            ? currWeight + 15
+            : currWeight + 1;
+
+        await sleep(0.5);
+
+        switch (newNodeState) {
+          case boardState.cellStates.END:
+            foundPath = newAcc;
+            console.log("This is the path");
+            console.log(foundPath);
+            drawPath(foundPath);
+            return foundPath;
+          case boardState.cellStates.EMPTY || boardState.cellStates.WEIGHT:
+            binarySearchInsert(queue, [newNodePos, newAcc, newWeight]);
+            break;
+        }
+
+        displayCell.classList.remove("looking-node");
+        addToVisited(newNodePos[0], newNodePos[1]);
+
+        console.log(queue);
+      }
+    }
   }
+}
+
+function binarySearchInsert(queue, newItem) {
+  let l = 0;
+  let r = queue.length - 1;
+  let mid;
+
+  while (l <= r) {
+    mid = Math.floor((l + r) / 2);
+
+    if (queue[mid][2] == newItem[2]) {
+      queue.splice(mid, 0, newItem);
+      return;
+    }
+    if (queue[mid][2] < newItem[2]) {
+      l = mid + 1;
+    } else {
+      r = mid - 1;
+    }
+  }
+
+  queue.splice(l, 0, newItem);
 }
 
 // function getAdjacentNodes(row, col) {
@@ -165,3 +238,20 @@ export async function dfs() {
 
 //   return adjacentNodes;
 // }
+
+export function test() {
+  let queue = [];
+
+  binarySearchInsert(queue, [0, 1, 1]);
+  binarySearchInsert(queue, [0, 2, 3]);
+  binarySearchInsert(queue, [0, 1, 3]);
+  binarySearchInsert(queue, [0, 0, 10]);
+  binarySearchInsert(queue, [0, 0, 6]);
+  binarySearchInsert(queue, [0, 0, 4]);
+  binarySearchInsert(queue, [0, 3, 3]);
+  binarySearchInsert(queue, [0, 0, 9]);
+  binarySearchInsert(queue, [0, 0, 5]);
+  binarySearchInsert(queue, [0, 2, 1]);
+
+  console.log(queue);
+}
