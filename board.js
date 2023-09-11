@@ -45,6 +45,9 @@ class Board {
         case "random":
           boardState.generateRandomBoard();
           break;
+        case "random-weighted":
+          boardState.generateRandomWeightedBoard();
+          break;
         case "maze-bfs":
           break;
       }
@@ -106,7 +109,7 @@ class Board {
 
   async generateRandomBoard() {
     this.resetBoard();
-    const probability = 0.3;
+    const probability = 0.2;
 
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -114,6 +117,30 @@ class Board {
       for (let col = 0; col < this.gridCount * 2; col++) {
         if (Math.random() < probability) {
           this.setCellNode(row, col, "wall");
+          await sleep(0.001);
+        }
+      }
+    }
+  }
+
+  async generateRandomWeightedBoard() {
+    this.resetBoard();
+    const probability = 0.2;
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    for (let row = 0; row < this.gridCount; row++) {
+      for (let col = 0; col < this.gridCount * 2; col++) {
+        let nodeType;
+
+        if (Math.random() < 0.5) {
+          nodeType = "wall";
+        } else {
+          nodeType = "weight";
+        }
+
+        if (Math.random() < probability) {
+          this.setCellNode(row, col, nodeType);
           await sleep(0.001);
         }
       }

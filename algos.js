@@ -174,7 +174,7 @@ export async function dijkstra() {
         let newAcc = currAcc.concat([currNodePos]);
         let newWeight =
           newNodeState == boardState.cellStates.WEIGHT
-            ? currWeight + 15
+            ? currWeight + 10
             : currWeight + 1;
 
         await sleep(0.5);
@@ -186,7 +186,10 @@ export async function dijkstra() {
             console.log(foundPath);
             drawPath(foundPath);
             return foundPath;
-          case boardState.cellStates.EMPTY || boardState.cellStates.WEIGHT:
+          case boardState.cellStates.EMPTY:
+            binarySearchInsert(queue, [newNodePos, newAcc, newWeight]);
+            break;
+          case boardState.cellStates.WEIGHT:
             binarySearchInsert(queue, [newNodePos, newAcc, newWeight]);
             break;
         }
