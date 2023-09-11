@@ -14,7 +14,7 @@ function isValid(row, col) {
     0 <= col &&
     col < 40 &&
     boardState.internalBoard[row][col] != boardState.cellStates.VISITED &&
-    boardState.internalBoard[row][col] != boardState.cellStates.START && 
+    boardState.internalBoard[row][col] != boardState.cellStates.START &&
     boardState.internalBoard[row][col] != boardState.cellStates.WALL
   );
 }
@@ -46,10 +46,7 @@ export async function bfs() {
       let newNodePos = [currNodePos[0] + offsets[i][0], currNodePos[1] + offsets[i][1]];
 
       if (isValid(newNodePos[0], newNodePos[1])) {
-        const displayCell = boardState.selectDisplayCell(
-          newNodePos[0],
-          newNodePos[1]
-        );
+        const displayCell = boardState.selectDisplayCell(newNodePos[0], newNodePos[1]);
 
         displayCell.classList.add("looking-node");
 
@@ -67,6 +64,55 @@ export async function bfs() {
             return foundPath;
           case boardState.cellStates.EMPTY:
             queue.push([newNodePos, newAcc]);
+            break;
+        }
+
+        displayCell.classList.remove("looking-node");
+        addToVisited(newNodePos[0], newNodePos[1]);
+      }
+    }
+  }
+
+  function addToVisited(row, col) {
+    const visitedCell = boardState.selectDisplayCell(row, col);
+    visitedCell.classList.add("visited-node");
+    visitedCell.dataset.state = boardState.cellStates.VISITED;
+    boardState.internalBoard[row][col] = boardState.cellStates.VISITED;
+  }
+}
+
+export async function dfs() {
+  let foundPath = null;
+  const start = [boardState.startNode, []];
+  let stack = [start];
+
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  while (!foundPath && stack.length != 0) {
+    let [currNodePos, currAcc] = stack.pop();
+
+    for (let i = 0; i < 4; i++) {
+      let newNodePos = [currNodePos[0] + offsets[i][0], currNodePos[1] + offsets[i][1]];
+
+      if (isValid(newNodePos[0], newNodePos[1])) {
+        const displayCell = boardState.selectDisplayCell(newNodePos[0], newNodePos[1]);
+
+        displayCell.classList.add("looking-node");
+
+        let newAcc = currAcc.concat([currNodePos]);
+        const newNodeState = parseInt(boardState.internalBoard[newNodePos[0]][newNodePos[1]], 10);
+
+        await sleep(50);
+
+        switch (newNodeState) {
+          case boardState.cellStates.END:
+            foundPath = newAcc;
+            console.log("This is the path");
+            console.log(foundPath);
+            drawPath(foundPath);
+            return foundPath;
+          case boardState.cellStates.EMPTY:
+            stack.push([newNodePos, newAcc]);
             break;
         }
 

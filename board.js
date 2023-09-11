@@ -18,9 +18,7 @@ class Board {
   }
 
   selectDisplayCell(row, col) {
-    const selectedCell = document.querySelector(
-      `div[data-row='${row}'][data-col='${col}']`
-    );
+    const selectedCell = document.querySelector(`div[data-row='${row}'][data-col='${col}']`);
     return selectedCell;
   }
 
@@ -31,6 +29,22 @@ class Board {
     const resetButton = document.getElementById("reset");
     resetButton.addEventListener("click", (event) => {
       this.resetBoard();
+    });
+
+    const terrainsSelect = document.getElementById("terrains");
+    terrainsSelect.addEventListener("change", () => {
+      const selectedTerrain = terrainsSelect.value;
+
+      switch (selectedTerrain) {
+        case "plain":
+          boardState.resetBoard();
+          break;
+        case "random":
+          boardState.generateRandomBoard();
+          break;
+        case "maze-bfs":
+          break;
+      }
     });
   }
 
@@ -87,12 +101,31 @@ class Board {
     );
   }
 
-  setCellNode(row, col) {
+  generateRandomBoard() {
+    this.resetBoard();
+    const probability = 0.3;
+
+    for (let row = 0; row < this.gridCount; row++) {
+      for (let col = 0; col < this.gridCount * 2; col++) {
+        if (Math.random() < probability) {
+          this.setCellNode(row, col, "wall");
+        }
+      }
+    }
+  }
+
+  generateMazeBFSBoard() {}
+
+  setCellNode(row, col, nodeOption = null) {
     const nodeType = document.getElementById("node-types");
     const clickedCell = this.selectDisplayCell(row, col);
+    let type = nodeType.value;
+    if (nodeOption != null) {
+      type = nodeOption;
+    }
 
     if (clickedCell.dataset.state == this.cellStates.EMPTY) {
-      switch (nodeType.value) {
+      switch (type) {
         case "start":
           const oldStart = document.querySelector(".start-node");
           if (oldStart) oldStart.classList.remove("start-node");
