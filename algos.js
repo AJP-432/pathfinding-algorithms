@@ -53,7 +53,7 @@ export async function bfs() {
         let newAcc = currAcc.concat([currNodePos]);
         const newNodeState = parseInt(boardState.internalBoard[newNodePos[0]][newNodePos[1]], 10);
 
-        await sleep(2);
+        await sleep(0.5);
 
         switch (newNodeState) {
           case boardState.cellStates.END:
@@ -102,7 +102,7 @@ export async function dfs() {
         let newAcc = currAcc.concat([currNodePos]);
         const newNodeState = parseInt(boardState.internalBoard[newNodePos[0]][newNodePos[1]], 10);
 
-        await sleep(50);
+        await sleep(0.5);
 
         switch (newNodeState) {
           case boardState.cellStates.END:
