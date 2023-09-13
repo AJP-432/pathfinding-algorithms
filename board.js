@@ -15,12 +15,16 @@ class Board {
     };
     this.startNode = null;
     this.endNode = null;
+    this.offsets = [
+      [1, 0],
+      [0, 1],
+      [-1, 0],
+      [0, -1],
+    ];
   }
 
   selectDisplayCell(row, col) {
-    const selectedCell = document.querySelector(
-      `div[data-row='${row}'][data-col='${col}']`
-    );
+    const selectedCell = document.querySelector(`div[data-row='${row}'][data-col='${col}']`);
     return selectedCell;
   }
 
@@ -48,7 +52,8 @@ class Board {
         case "random-weighted":
           boardState.generateRandomWeightedBoard();
           break;
-        case "maze-bfs":
+        case "maze-dfs":
+          boardState.generateMazeDFSBoard();
           break;
       }
     });
@@ -147,9 +152,69 @@ class Board {
     }
   }
 
-  generateMazeBFSBoard() {}
+  isValid(row, col) {
+    return row >= 0 && row < this.gridCount && col >= 0 && col < this.gridCount * 2;
+  }
+
+  async generateMazeDFSBoard() {
+    this.resetBoard();
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    // Start with all walls
+    for (let row = 0; row < this.gridCount; row++) {
+      for (let col = 0; col < this.gridCount * 2; col++) {
+        this.setCellNode(row, col, "wall");
+      }
+    }
+
+    const startRow = 20; // Math.floor(Math.random() * this.gridCount);
+    const startCol = 20; //Math.floor(Math.random() * this.gridCount * 2);
+    let stack = [[startRow, startCol]];
+    let backtrackStack = [];
+    while (stack.length != 0 || backtrackStack.length != 0) {
+      await sleep(0.2);
+      let currRow;
+      let currCol;
+      if (stack.length !== 0) [currRow, currCol] = stack.pop();
+      else [currRow, currCol] = backtrackStack.pop();
+      let randomIndex = 0;
+
+      // while (randomIndex === null) {
+      //   let temp = Math.floor(Math.random() * 4);
+      //   let newRow = currRow + this.offsets[temp][0];
+      //   let newCol = currCol + this.offsets[temp][1];
+      //   if (this.isValid(newRow, newCol)) {
+      //     if (this.internalBoard[newRow][newCol] === this.cellStates.WALL) {
+      //       randomIndex = temp;
+      //     }
+      //   }
+      // }
+      for (let i = 0; i < 4; i++) {
+        let newRow = currRow + this.offsets[i][0];
+        let newCol = currCol + this.offsets[i][1];
+
+        if (this.isValid(newRow, newCol)) {
+          if (this.internalBoard[newRow][newCol] !== this.cellStates.EMPTY) {
+            if (randomIndex === i) {
+              this.setCellNode(newRow, newCol, "empty");
+              stack.push([newRow, newCol]);
+            }
+          }
+        } else {
+          stack.push([currRow, currCol]);
+          randomIndex = randomIndex + 1;
+          if (randomIndex == 4) {
+            randomIndex = 0;
+          }
+        }
+      }
+    }
+  }
 
   setCellNode(row, col, nodeOption = null) {
+    if (row < 0 || row >= this.gridCount || col < 0 || col >= this.gridCount * 2) return;
+
     const nodeType = document.getElementById("node-types");
     const clickedCell = this.selectDisplayCell(row, col);
     let type = nodeType.value;
@@ -157,39 +222,44 @@ class Board {
       type = nodeOption;
     }
 
-    if (clickedCell.dataset.state == this.cellStates.EMPTY) {
-      switch (type) {
-        case "start":
-          const oldStart = document.querySelector(".start-node");
-          if (oldStart) oldStart.classList.remove("start-node");
-          this.startNode = [row, col];
-          clickedCell.dataset.state = this.cellStates.START;
-          clickedCell.classList.add("start-node");
-          this.internalBoard[row][col] = this.cellStates.START;
-          break;
-        case "end":
-          const oldEnd = document.querySelector(".end-node");
-          if (oldEnd) oldEnd.classList.remove("end-node");
-          this.endNode = [row, col];
-          clickedCell.dataset.state = this.cellStates.END;
-          clickedCell.classList.add("end-node");
-          this.internalBoard[row][col] = this.cellStates.END;
-          break;
-        case "wall":
-          clickedCell.dataset.state = this.cellStates.WALL;
-          clickedCell.classList.add("wall-node");
-          this.internalBoard[row][col] = this.cellStates.WALL;
-          break;
-        case "weight":
-          clickedCell.dataset.state = this.cellStates.WEIGHT;
-          clickedCell.classList.add("weight-node");
-          this.internalBoard[row][col] = this.cellStates.WEIGHT;
-          break;
-      }
+    this.unsetCellNode(row, col);
+
+    switch (type) {
+      case "empty":
+        clickedCell.dataset.state = this.cellStates.EMPTY;
+        clickedCell.className = "cell";
+        this.internalBoard[row][col] = this.cellStates.EMPTY;
+        break;
+      case "start":
+        this.startNode = [row, col];
+        clickedCell.dataset.state = this.cellStates.START;
+        clickedCell.classList.add("start-node");
+        this.internalBoard[row][col] = this.cellStates.START;
+        break;
+      case "end":
+        const oldEnd = document.querySelector(".end-node");
+        if (oldEnd) oldEnd.classList.remove("end-node");
+        this.endNode = [row, col];
+        clickedCell.dataset.state = this.cellStates.END;
+        clickedCell.classList.add("end-node");
+        this.internalBoard[row][col] = this.cellStates.END;
+        break;
+      case "wall":
+        clickedCell.dataset.state = this.cellStates.WALL;
+        clickedCell.classList.add("wall-node");
+        this.internalBoard[row][col] = this.cellStates.WALL;
+        break;
+      case "weight":
+        clickedCell.dataset.state = this.cellStates.WEIGHT;
+        clickedCell.classList.add("weight-node");
+        this.internalBoard[row][col] = this.cellStates.WEIGHT;
+        break;
     }
   }
 
   unsetCellNode(row, col) {
+    if (row < 0 || row >= this.gridCount || col < 0 || col >= this.gridCount * 2) return;
+
     const clickedCell = this.selectDisplayCell(row, col);
 
     if (clickedCell.dataset.state != this.cellStates.EMPTY) {
