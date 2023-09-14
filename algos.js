@@ -89,19 +89,28 @@ export async function dfs() {
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  while ((!foundPath && stack.length != 0) || backtrackStack.length != 0) {
+  while (!foundPath && (stack.length != 0 || backtrackStack.length != 0)) {
     let currNodePos;
     let currAcc;
+    let isBackTrack = false;
     if (stack.length != 0) {
       [currNodePos, currAcc] = stack.pop();
     } else {
       [currNodePos, currAcc] = backtrackStack.pop();
+      isBackTrack = true;
     }
     let firstTime = true;
 
     for (let i = 0; i < 4; i++) {
-      let newNodePos = [currNodePos[0] + offsets[i][0], currNodePos[1] + offsets[i][1]];
-      let newAcc = currAcc.concat([currNodePos]);
+      let newNodePos;
+      let newAcc;
+      if (!isBackTrack) {
+        newNodePos = [currNodePos[0] + offsets[i][0], currNodePos[1] + offsets[i][1]];
+        newAcc = currAcc.concat([currNodePos]);
+      } else {
+        newNodePos = currNodePos;
+        newAcc = currAcc;
+      }
 
       if (isValid(newNodePos[0], newNodePos[1])) {
         if (firstTime) {
@@ -129,6 +138,9 @@ export async function dfs() {
           displayCell.classList.remove("looking-node");
           addToVisited(newNodePos[0], newNodePos[1]);
           firstTime = false;
+          if (isBackTrack) {
+            break;
+          }
         } else {
           console.log("LASTIME");
           backtrackStack.push([newNodePos, newAcc]);

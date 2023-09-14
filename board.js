@@ -1,7 +1,7 @@
 class Board {
   constructor() {
-    this.unitSize = 700 / 50;
-    this.gridCount = 50;
+    this.gridCount = 70;
+    this.unitSize = 700 / this.gridCount;
     this.internalBoard;
     this.displayBoard = document.querySelector(".board");
     this.cellStates = {

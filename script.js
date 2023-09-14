@@ -13,6 +13,7 @@ function navigate() {
       break;
     case "dijkstra":
       dijkstra();
+      console.log(boardState.internalBoard);
       break;
     // case "astar":
     //   astar();
