@@ -50,15 +50,24 @@ export async function bfs() {
     let [currNodePos, currAcc] = queue.shift();
 
     for (let i = 0; i < 4; i++) {
-      let newNodePos = [currNodePos[0] + offsets[i][0], currNodePos[1] + offsets[i][1]];
+      let newNodePos = [
+        currNodePos[0] + offsets[i][0],
+        currNodePos[1] + offsets[i][1],
+      ];
 
       if (isValid(newNodePos[0], newNodePos[1])) {
-        const displayCell = boardState.selectDisplayCell(newNodePos[0], newNodePos[1]);
+        const displayCell = boardState.selectDisplayCell(
+          newNodePos[0],
+          newNodePos[1]
+        );
 
         displayCell.classList.add("looking-node");
 
         let newAcc = currAcc.concat([currNodePos]);
-        const newNodeState = parseInt(boardState.internalBoard[newNodePos[0]][newNodePos[1]], 10);
+        const newNodeState = parseInt(
+          boardState.internalBoard[newNodePos[0]][newNodePos[1]],
+          10
+        );
 
         await sleep(0.5);
 
@@ -105,7 +114,10 @@ export async function dfs() {
       let newNodePos;
       let newAcc;
       if (!isBackTrack) {
-        newNodePos = [currNodePos[0] + offsets[i][0], currNodePos[1] + offsets[i][1]];
+        newNodePos = [
+          currNodePos[0] + offsets[i][0],
+          currNodePos[1] + offsets[i][1],
+        ];
         newAcc = currAcc.concat([currNodePos]);
       } else {
         newNodePos = currNodePos;
@@ -115,11 +127,17 @@ export async function dfs() {
       if (isValid(newNodePos[0], newNodePos[1])) {
         if (firstTime) {
           console.log("FIRSTIME");
-          const displayCell = boardState.selectDisplayCell(newNodePos[0], newNodePos[1]);
+          const displayCell = boardState.selectDisplayCell(
+            newNodePos[0],
+            newNodePos[1]
+          );
 
           displayCell.classList.add("looking-node");
 
-          const newNodeState = parseInt(boardState.internalBoard[newNodePos[0]][newNodePos[1]], 10);
+          const newNodeState = parseInt(
+            boardState.internalBoard[newNodePos[0]][newNodePos[1]],
+            10
+          );
 
           await sleep(0.5);
 
@@ -161,18 +179,29 @@ export async function dijkstra() {
     let [currNodePos, currAcc, currWeight] = queue.shift();
 
     for (let i = 0; i < 4; i++) {
-      let newNodePos = [currNodePos[0] + offsets[i][0], currNodePos[1] + offsets[i][1]];
+      let newNodePos = [
+        currNodePos[0] + offsets[i][0],
+        currNodePos[1] + offsets[i][1],
+      ];
 
       if (isValid(newNodePos[0], newNodePos[1])) {
-        const displayCell = boardState.selectDisplayCell(newNodePos[0], newNodePos[1]);
+        const displayCell = boardState.selectDisplayCell(
+          newNodePos[0],
+          newNodePos[1]
+        );
 
         displayCell.classList.add("looking-node");
 
-        const newNodeState = parseInt(boardState.internalBoard[newNodePos[0]][newNodePos[1]], 10);
+        const newNodeState = parseInt(
+          boardState.internalBoard[newNodePos[0]][newNodePos[1]],
+          10
+        );
 
         let newAcc = currAcc.concat([currNodePos]);
         let newWeight =
-          newNodeState == boardState.cellStates.WEIGHT ? currWeight + 10 : currWeight + 1;
+          newNodeState == boardState.cellStates.WEIGHT
+            ? currWeight + 10
+            : currWeight + 1;
 
         await sleep(0.5);
 
@@ -197,6 +226,89 @@ export async function dijkstra() {
         console.log(queue);
       }
     }
+  }
+}
+
+export async function astar() {
+  let foundPath = null;
+  const start = [boardState.startNode, [], 0];
+  let pQueue = [start];
+  let backtrackQueue = [];
+
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  while (!foundPath && (pQueue.length != 0 || backtrackQueue.length != 0)) {
+    let currNodePos, newNodePos;
+    let currAcc, newAcc;
+    let currWeight, newWeight;
+
+    if (pQueue.length != 0) {
+      [currNodePos, currAcc, currWeight] = pQueue.shift();
+      const neighbours = offsets.map((offset) => [
+        currNodePos[0] + offset[0],
+        currNodePos[1] + offset[1],
+      ]);
+
+      let orderedNeighbours = [];
+
+      for (let neighbour of neighbours) {
+        if (isValid(neighbour[0], neighbour[1])) {
+          const neighbourState = parseInt(
+            boardState.internalBoard[neighbour[0]][neighbour[1]],
+            10
+          );
+          let neighbourAcc = currAcc.concat([currNodePos]);
+          let neighbourWeight =
+            neighbourState == boardState.cellStates.WEIGHT
+              ? currWeight + 10 + heuristic(neighbour, boardState.endNode)
+              : currWeight + 1 + heuristic(neighbour, boardState.endNode);
+
+          binarySearchInsert(orderedNeighbours, [
+            neighbour,
+            neighbourAcc,
+            neighbourWeight,
+          ]);
+        }
+      }
+
+      [newNodePos, newAcc, newWeight] = orderedNeighbours.shift();
+
+      for (let remainingNeighbour of orderedNeighbours) {
+        binarySearchInsert(backtrackQueue, remainingNeighbour);
+      }
+    } else {
+      [newNodePos, newAcc, newWeight] = backtrackQueue.shift();
+    }
+
+    const displayCell = boardState.selectDisplayCell(
+      newNodePos[0],
+      newNodePos[1]
+    );
+
+    displayCell.classList.add("looking-node");
+
+    const newNodeState = parseInt(
+      boardState.internalBoard[newNodePos[0]][newNodePos[1]],
+      10
+    );
+
+    await sleep(0.5);
+
+    switch (newNodeState) {
+      case boardState.cellStates.END:
+        foundPath = newAcc;
+        drawPath(foundPath);
+        return foundPath;
+      default:
+        binarySearchInsert(pQueue, [newNodePos, newAcc, newWeight]);
+    }
+
+    displayCell.classList.remove("looking-node");
+    addToVisited(newNodePos[0], newNodePos[1]);
+  }
+
+  function heuristic(node, goal) {
+    return Math.abs(node[0] - goal[0]) + Math.abs(node[1] - goal[1]);
   }
 }
 
