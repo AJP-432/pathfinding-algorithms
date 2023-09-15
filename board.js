@@ -38,6 +38,7 @@ class Board {
     const resetButton = document.getElementById("reset");
     resetButton.addEventListener("click", () => {
       this.resetBoard();
+      this.resetSelects();
     });
 
     const terrainsSelect = document.getElementById("terrains");
@@ -303,12 +304,40 @@ class Board {
   }
 
   resetBoard() {
-    this.startNode = null;
-    this.endNode = null;
+    this.resetting = true;
 
-    this.generateBoard(this.gridCount);
+    try {
+      this.internalBoard = Array.from({ length: this.gridCount }, () =>
+        Array.from({ length: this.gridCount * 2 }, () => this.cellStates.EMPTY)
+      );
 
-    console.log(this.internalBoard);
+      this.startNode = null;
+      this.endNode = null;
+
+      const cells = document.querySelectorAll(".cell");
+      cells.forEach((cell) => {
+        cell.dataset.state = this.cellStates.EMPTY;
+        cell.classList.remove(
+          "start-node",
+          "end-node",
+          "wall-node",
+          "weight-node"
+        );
+      });
+    } finally {
+      this.resetting = false;
+    }
+  }
+
+  resetSelects() {
+    const algorithmsSelect = document.getElementById("algorithms");
+    algorithmsSelect.selectedIndex = 0;
+
+    const terrainsSelect = document.getElementById("terrains");
+    terrainsSelect.selectedIndex = 0;
+
+    const nodeTypesSelect = document.getElementById("node-types");
+    nodeTypesSelect.selectedIndex = 0;
   }
 }
 
