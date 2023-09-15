@@ -68,13 +68,13 @@ class Board {
     // Clear previous board
     board.innerHTML = "";
 
-    for (let a = 0; a < 2 * size; a++) {
+    for (let a = 0; a < 2 * size + 1; a++) {
       const col_div = document.createElement("div");
       col_div.dataset.col = `${a}`;
       col_div.style.width = "100%";
       col_div.style.height = `${this.unitSize}px`;
 
-      for (let b = 0; b < size; b++) {
+      for (let b = 0; b < size + 1; b++) {
         const row_div = document.createElement("div");
         row_div.dataset.row = `${b}`;
         row_div.dataset.col = `${a}`;
@@ -242,6 +242,11 @@ class Board {
         this.internalBoard[row][col] = this.cellStates.EMPTY;
         break;
       case "start":
+        const oldStart = document.querySelector(".start-node");
+        if (oldStart) {
+          oldStart.classList.remove("start-node");
+          oldStart.dataset.state = this.cellStates.EMPTY;
+        }
         this.startNode = [row, col];
         clickedCell.dataset.state = this.cellStates.START;
         clickedCell.classList.add("start-node");
@@ -249,7 +254,10 @@ class Board {
         break;
       case "end":
         const oldEnd = document.querySelector(".end-node");
-        if (oldEnd) oldEnd.classList.remove("end-node");
+        if (oldEnd) {
+          oldEnd.classList.remove("end-node");
+          oldEnd.dataset.state = this.cellStates.EMPTY;
+        }
         this.endNode = [row, col];
         clickedCell.dataset.state = this.cellStates.END;
         clickedCell.classList.add("end-node");
