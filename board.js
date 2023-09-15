@@ -1,6 +1,6 @@
 class Board {
   constructor() {
-    this.gridCount = 70;
+    this.gridCount = 50;
     this.unitSize = 700 / this.gridCount;
     this.internalBoard;
     this.displayBoard = document.querySelector(".board");
@@ -24,7 +24,9 @@ class Board {
   }
 
   selectDisplayCell(row, col) {
-    const selectedCell = document.querySelector(`div[data-row='${row}'][data-col='${col}']`);
+    const selectedCell = document.querySelector(
+      `div[data-row='${row}'][data-col='${col}']`
+    );
     return selectedCell;
   }
 
@@ -153,7 +155,9 @@ class Board {
   }
 
   isValid(row, col) {
-    return row >= 0 && row < this.gridCount && col >= 0 && col < this.gridCount * 2;
+    return (
+      row >= 0 && row < this.gridCount && col >= 0 && col < this.gridCount * 2
+    );
   }
 
   async generateMazeDFSBoard() {
@@ -213,7 +217,13 @@ class Board {
   }
 
   setCellNode(row, col, nodeOption = null) {
-    if (row < 0 || row >= this.gridCount || col < 0 || col >= this.gridCount * 2) return;
+    if (
+      row < 0 ||
+      row >= this.gridCount ||
+      col < 0 ||
+      col >= this.gridCount * 2
+    )
+      return;
 
     const nodeType = document.getElementById("node-types");
     const clickedCell = this.selectDisplayCell(row, col);
@@ -258,7 +268,13 @@ class Board {
   }
 
   unsetCellNode(row, col) {
-    if (row < 0 || row >= this.gridCount || col < 0 || col >= this.gridCount * 2) return;
+    if (
+      row < 0 ||
+      row >= this.gridCount ||
+      col < 0 ||
+      col >= this.gridCount * 2
+    )
+      return;
 
     const clickedCell = this.selectDisplayCell(row, col);
 

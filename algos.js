@@ -274,10 +274,16 @@ export async function astar() {
         }
       }
 
-      [newNodePos, newAcc, newWeight] = orderedNeighbours.shift();
+      if (orderedNeighbours.length) {
+        [newNodePos, newAcc, newWeight] = orderedNeighbours.shift();
 
-      for (let remainingNeighbour of orderedNeighbours) {
-        binarySearchInsert(backtrackQueue, remainingNeighbour);
+        for (let remainingNeighbour of orderedNeighbours) {
+          if (!containsNode(backtrackQueue, remainingNeighbour)) {
+            binarySearchInsert(backtrackQueue, remainingNeighbour);
+          }
+        }
+      } else {
+        [newNodePos, newAcc, newWeight] = backtrackQueue.shift();
       }
     } else {
       [newNodePos, newAcc, newWeight] = backtrackQueue.shift();
@@ -313,6 +319,16 @@ export async function astar() {
 
   function heuristic(node, goal) {
     return Math.abs(node[0] - goal[0]) + Math.abs(node[1] - goal[1]);
+  }
+
+  function containsNode(queue, node) {
+    for (let elem of queue) {
+      if (elem[0] == node[0]) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
 
