@@ -1,7 +1,9 @@
 class Board {
   constructor() {
-    this.gridCount = 50;
+    this.gridCount = 30;
     this.unitSize = 700 / this.gridCount;
+    this.rowCount = this.gridCount + 1;
+    this.colCount = this.gridCount * 2 + 1;
     this.internalBoard;
     this.displayBoard = document.querySelector(".board");
     this.cellStates = {
@@ -30,10 +32,10 @@ class Board {
     return selectedCell;
   }
 
-  generateBoard(size = this.gridCount) {
+  generateBoard() {
     this.internalBoard = null;
-    this.generateDisplayBoard(size);
-    this.generateInternalBoard(size);
+    this.generateDisplayBoard();
+    this.generateInternalBoard();
 
     const resetButton = document.getElementById("reset");
     resetButton.addEventListener("click", () => {
@@ -55,26 +57,26 @@ class Board {
         case "random-weighted":
           boardState.generateRandomWeightedBoard();
           break;
-        case "maze-dfs":
-          boardState.generateMazeDFSBoard();
+        case "maze":
+          boardState.generateRecursiveMaze();
           break;
       }
     });
   }
 
-  generateDisplayBoard(size = this.gridCount) {
+  generateDisplayBoard() {
     const board = document.querySelector(".board");
 
     // Clear previous board
     board.innerHTML = "";
 
-    for (let a = 0; a < 2 * size + 1; a++) {
+    for (let a = 0; a < this.colCount; a++) {
       const col_div = document.createElement("div");
       col_div.dataset.col = `${a}`;
       col_div.style.width = "100%";
       col_div.style.height = `${this.unitSize}px`;
 
-      for (let b = 0; b < size + 1; b++) {
+      for (let b = 0; b < this.rowCount; b++) {
         const row_div = document.createElement("div");
         row_div.dataset.row = `${b}`;
         row_div.dataset.col = `${a}`;
@@ -109,9 +111,9 @@ class Board {
     }
   }
 
-  generateInternalBoard(size = this.gridCount) {
-    this.internalBoard = Array.from({ length: size }, () =>
-      Array.from({ length: size * 2 }, () => this.cellStates.EMPTY)
+  generateInternalBoard() {
+    this.internalBoard = Array.from({ length: this.rowCount }, () =>
+      Array.from({ length: this.rowCount }, () => this.cellStates.EMPTY)
     );
   }
 
@@ -121,8 +123,8 @@ class Board {
 
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    for (let row = 0; row < this.gridCount; row++) {
-      for (let col = 0; col < this.gridCount * 2; col++) {
+    for (let row = 0; row < this.rowCount; row++) {
+      for (let col = 0; col < this.colCount; col++) {
         if (Math.random() < probability) {
           this.setCellNode(row, col, "wall");
           await sleep(0.001);
@@ -137,8 +139,8 @@ class Board {
 
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    for (let row = 0; row < this.gridCount; row++) {
-      for (let col = 0; col < this.gridCount * 2; col++) {
+    for (let row = 0; row < this.rowCount; row++) {
+      for (let col = 0; col < this.colCount; col++) {
         let nodeType;
 
         if (Math.random() < 0.5) {
@@ -156,74 +158,99 @@ class Board {
   }
 
   isValid(row, col) {
-    return (
-      row >= 0 && row < this.gridCount && col >= 0 && col < this.gridCount * 2
-    );
+    return row >= 0 && row < this.rowCount && col >= 0 && col < this.colCount;
   }
 
-  async generateMazeDFSBoard() {
+  async generateRecursiveMaze() {
     this.resetBoard();
 
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-    // Start with all walls
-    for (let row = 0; row < this.gridCount; row++) {
-      for (let col = 0; col < this.gridCount * 2; col++) {
-        this.setCellNode(row, col, "wall");
-      }
-    }
-
-    const startRow = 20; // Math.floor(Math.random() * this.gridCount);
-    const startCol = 20; //Math.floor(Math.random() * this.gridCount * 2);
-    let stack = [[startRow, startCol]];
-    let backtrackStack = [];
-    while (stack.length != 0 || backtrackStack.length != 0) {
-      await sleep(0.2);
-      let currRow;
-      let currCol;
-      if (stack.length !== 0) [currRow, currCol] = stack.pop();
-      else [currRow, currCol] = backtrackStack.pop();
-      let randomIndex = 0;
-
-      // while (randomIndex === null) {
-      //   let temp = Math.floor(Math.random() * 4);
-      //   let newRow = currRow + this.offsets[temp][0];
-      //   let newCol = currCol + this.offsets[temp][1];
-      //   if (this.isValid(newRow, newCol)) {
-      //     if (this.internalBoard[newRow][newCol] === this.cellStates.WALL) {
-      //       randomIndex = temp;
-      //     }
-      //   }
-      // }
-      for (let i = 0; i < 4; i++) {
-        let newRow = currRow + this.offsets[i][0];
-        let newCol = currCol + this.offsets[i][1];
-
-        if (this.isValid(newRow, newCol)) {
-          if (this.internalBoard[newRow][newCol] !== this.cellStates.EMPTY) {
-            if (randomIndex === i) {
-              this.setCellNode(newRow, newCol, "empty");
-              stack.push([newRow, newCol]);
-            }
-          }
-        } else {
-          stack.push([currRow, currCol]);
-          randomIndex = randomIndex + 1;
-          if (randomIndex == 4) {
-            randomIndex = 0;
-          }
+    for (let row = 0; row < this.rowCount; row++) {
+      for (let col = 0; col < this.colCount; col++) {
+        if (
+          row === 0 ||
+          col === 0 ||
+          row === this.rowCount - 1 ||
+          col === this.colCount - 1
+        ) {
+          this.setCellNode(row, col, "wall");
         }
       }
     }
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const chooseOrientation = (width, height) => {
+      // returns true if horizontal, false if vertical
+      if (width < height) {
+        return true; // horizontal
+      } else if (width < height) {
+        return false; // vertical
+      } else {
+        return Math.random() < 0.5 ? true : false; // horizontal or vertical
+      }
+    };
+
+    const recursiveDivision = async (startRow, endRow, startCol, endCol) => {
+      if (endRow - startRow < 2 || endCol - startCol < 2) return;
+
+      // Choose orientation (horizontal or vertical)
+      const horizontal = chooseOrientation(
+        endCol - startCol,
+        endRow - startRow
+      );
+
+      // Create a passage along one edge of the section
+      let passageRow;
+      let passageCol;
+      let wallRow;
+      let wallCol;
+
+      if (horizontal) {
+        passageCol =
+          startCol + Math.floor(Math.random() * (endCol - startCol + 1));
+        wallRow =
+          startRow + Math.floor(Math.random() * (endRow - startRow + 1));
+
+        for (let col = startCol; col <= endCol; col++) {
+          if (col != passageCol) {
+            this.setCellNode(wallRow, col, "wall");
+          }
+        }
+      } else {
+        passageRow =
+          startRow + Math.floor(Math.random() * (endRow - startRow + 1));
+        wallCol =
+          startCol + Math.floor(Math.random() * (endCol - startCol + 1));
+
+        for (let row = startRow; row <= endRow; row++) {
+          if (row != passageRow) {
+            this.setCellNode(row, wallCol, "wall");
+          }
+        }
+      }
+
+      await sleep(300);
+
+      // Recurse on the smaller sections
+      recursiveDivision(
+        startRow,
+        horizontal ? wallRow - 1 : endRow,
+        startCol,
+        horizontal ? endCol : wallCol - 1
+      );
+      recursiveDivision(
+        horizontal ? wallRow + 1 : startRow,
+        endRow,
+        horizontal ? startCol : wallCol + 1,
+        endCol
+      );
+    };
+
+    recursiveDivision(1, this.rowCount - 2, 1, this.colCount - 2);
   }
 
   setCellNode(row, col, nodeOption = null) {
-    if (
-      row < 0 ||
-      row >= this.gridCount ||
-      col < 0 ||
-      col >= this.gridCount * 2
-    )
+    if (row < 0 || row >= this.rowCount || col < 0 || col >= this.colCount)
       return;
 
     const nodeType = document.getElementById("node-types");
@@ -277,12 +304,7 @@ class Board {
   }
 
   unsetCellNode(row, col) {
-    if (
-      row < 0 ||
-      row >= this.gridCount ||
-      col < 0 ||
-      col >= this.gridCount * 2
-    )
+    if (row < 0 || row >= this.rowCount || col < 0 || col >= this.colCount)
       return;
 
     const clickedCell = this.selectDisplayCell(row, col);
@@ -315,8 +337,8 @@ class Board {
     this.resetting = true;
 
     try {
-      this.internalBoard = Array.from({ length: this.gridCount }, () =>
-        Array.from({ length: this.gridCount * 2 }, () => this.cellStates.EMPTY)
+      this.internalBoard = Array.from({ length: this.rowCount }, () =>
+        Array.from({ length: this.colCount }, () => this.cellStates.EMPTY)
       );
 
       this.startNode = null;
