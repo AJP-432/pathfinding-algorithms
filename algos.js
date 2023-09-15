@@ -77,6 +77,7 @@ export async function bfs() {
             console.log("This is the path");
             console.log(foundPath);
             drawPath(foundPath);
+            displayCell.classList.remove("looking-node");
             return foundPath;
           case boardState.cellStates.EMPTY:
             queue.push([newNodePos, newAcc]);
@@ -147,6 +148,7 @@ export async function dfs() {
               console.log("This is the path");
               console.log(foundPath);
               drawPath(foundPath);
+              displayCell.classList.remove("looking-node");
               return foundPath;
             case boardState.cellStates.EMPTY:
               stack.push([newNodePos, newAcc]);
@@ -211,6 +213,7 @@ export async function dijkstra() {
             console.log("This is the path");
             console.log(foundPath);
             drawPath(foundPath);
+            displayCell.classList.remove("looking-node");
             return foundPath;
           case boardState.cellStates.EMPTY:
             binarySearchInsert(queue, [newNodePos, newAcc, newWeight]);
@@ -298,6 +301,7 @@ export async function astar() {
       case boardState.cellStates.END:
         foundPath = newAcc;
         drawPath(foundPath);
+        displayCell.classList.remove("looking-node");
         return foundPath;
       default:
         binarySearchInsert(pQueue, [newNodePos, newAcc, newWeight]);
@@ -332,38 +336,4 @@ function binarySearchInsert(queue, newItem) {
   }
 
   queue.splice(l, 0, newItem);
-}
-
-// function getAdjacentNodes(row, col) {
-//   function isValid(row, col) {
-//     return 0 <= row < 20 && 0 <= col < 40;
-//   }
-
-//   let adjacentNodes = [];
-
-//   for (const offset in offsets) {
-//     const neighbour = [row + offset[0], col + offset[1]];
-//     if (isValid(neighbour[0], neighbour[1])) {
-//       adjacentNodes.push();
-//     }
-//   }
-
-//   return adjacentNodes;
-// }
-
-export function test() {
-  let queue = [];
-
-  binarySearchInsert(queue, [0, 1, 1]);
-  binarySearchInsert(queue, [0, 2, 3]);
-  binarySearchInsert(queue, [0, 1, 3]);
-  binarySearchInsert(queue, [0, 0, 10]);
-  binarySearchInsert(queue, [0, 0, 6]);
-  binarySearchInsert(queue, [0, 0, 4]);
-  binarySearchInsert(queue, [0, 3, 3]);
-  binarySearchInsert(queue, [0, 0, 9]);
-  binarySearchInsert(queue, [0, 0, 5]);
-  binarySearchInsert(queue, [0, 2, 1]);
-
-  console.log(queue);
 }
