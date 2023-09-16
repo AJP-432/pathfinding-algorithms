@@ -1,3 +1,3 @@
-# Pathfinding Algorithm Visualizer in JS
+# Pathfinding Algorithm Visualizer
 
-Features Dijikstra (soon)
+Features Dijikstra, A*, BFS, and DFS pathfinding algorithms.
