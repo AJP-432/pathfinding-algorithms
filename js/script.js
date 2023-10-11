@@ -1,5 +1,5 @@
-import { boardState } from "/board.js";
-import { bfs, dfs, dijkstra, astar } from "/algos.js";
+import { boardState } from "/js/board.js";
+import { bfs, dfs, dijkstra, astar } from "/js/algos.js";
 
 function navigate() {
   const selectedAlgorithm = document.getElementById("algorithms").value;

@@ -1,4 +1,4 @@
-import { boardState } from "/board.js";
+import { boardState } from "/js/board.js";
 
 const offsets = [
   [1, 0],
