@@ -1,3 +1,3 @@
 # Pathfinding Algorithm Visualizer in JS
 
-Features Dijikstra (soon)
+Check it out here: https://ajp-432.github.io/pathfinding-algorithms/
